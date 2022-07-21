@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'cloudinary_storage', # important to add cloudinary_storage before django.contrib.staticfiles
     'django.contrib.staticfiles',
     'cloudinary',
+    'profiles',
 ]
 
 MIDDLEWARE = [
