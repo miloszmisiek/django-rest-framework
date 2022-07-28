@@ -4,6 +4,7 @@
 # from rest_framework.response import Response
 from django.db.models import Count
 from rest_framework import generics, filters #, permissions
+from django_filters.rest_framework import DjangoFilterBackend #third-party library django-filter
 from .models import Profile
 from .serialaziers import ProfileSerializer
 from drf_api.permissions import IsOwnerOrReadOnly
@@ -26,7 +27,12 @@ class ProfileList(generics.ListAPIView):
     ).order_by('-created_at')
 
     filter_backends = [
-        filters.OrderingFilter
+        filters.OrderingFilter,
+        DjangoFilterBackend,
+    ]
+    filterset_fields = [
+        # profiles that are following the profile given its id
+        'owner__following__followed__profile',
     ]
     ordering_fields = [
         'posts_count',
