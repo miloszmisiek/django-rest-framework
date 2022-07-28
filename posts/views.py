@@ -1,4 +1,5 @@
-from rest_framework import generics, permissions
+from django.db.models import Count
+from rest_framework import generics, permissions, filters
 from .models import Post
 from .serializers import PostsSerializer
 from drf_api.permissions import IsOwnerOrReadOnly
@@ -10,10 +11,22 @@ class PostList(generics.ListCreateAPIView):
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly
     ] # it will hide the post method if user in not logged in
-    queryset = Post.objects.all()
+    queryset = Post.objects.annotate(
+        comments_count=Count('comment', distinct=True),
+        likes_count=Count('likes', distinct=True),
+    ).order_by('-created_at')
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    filter_backends = [
+        filters.OrderingFilter
+    ]
+    ordering_fields = [
+        'comments_count',
+        'likes_count',
+        'likes__created_at',
+    ]
 
     # def get(self, request):
     #     posts = Post.objects.all()
@@ -38,7 +51,10 @@ class PostList(generics.ListCreateAPIView):
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostsSerializer # renders nice looking form in the UI
     permission_classes = [IsOwnerOrReadOnly] #only post owner can edit or delete post
-    queryset = Post.objects.all()
+    queryset = Post.objects.annotate(
+        comments_count=Count('comment', distinct=True),
+        likes_count=Count('likes', distinct=True),
+    ).order_by('-created_at')
 
     # def get_object(self, pk):
     #     try:
