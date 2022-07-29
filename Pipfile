@@ -9,6 +9,8 @@ django-cloudinary-storage = "*"
 pillow = "*"
 djangorestframework = "*"
 django-filter = "*"
+dj-rest-auth = {extras = ["with_social"], version = "*"}
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 
