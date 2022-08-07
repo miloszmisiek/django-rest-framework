@@ -22,7 +22,7 @@ class ProfileList(generics.ListAPIView):
     # 'owner__xyz' reletes to the db releted to common table i.e. profile-user-follower(used with releted names!) or profile-user-post
     queryset = Profile.objects.annotate(
         posts_count=Count('owner__post', distinct=True),
-        follower_count=Count('owner__followed', distinct=True),
+        followers_count=Count('owner__followed', distinct=True),
         following_count=Count('owner__following', distinct=True)
     ).order_by('-created_at')
 
@@ -60,7 +60,7 @@ class ProfileDetail(generics.RetrieveUpdateAPIView):
     permission_classes = [IsOwnerOrReadOnly]
     queryset = Profile.objects.annotate(
         posts_count=Count('owner__post', distinct=True),
-        follower_count=Count('owner__followed', distinct=True),
+        followers_count=Count('owner__followed', distinct=True),
         following_count=Count('owner__following', distinct=True)
     ).order_by('-created_at')
 
